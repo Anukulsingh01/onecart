@@ -234,19 +234,30 @@ function ShopContext({ children }) {
     }
 
     // 3. Get User Cart from DB
-    const getUserCart = async () => {
-        const token = localStorage.getItem('token');
-        if (!token) return;
+    // const getUserCart = async () => {
+    //     const token = localStorage.getItem('token');
+    //     if (!token) return;
 
-        try {
-            const result = await axios.post(serverUrl + '/api/cart/get', {}, { 
-                headers: { token } 
-            })
-            setCartItem(result.data)
-        } catch (error) {
-            console.log("Get User Cart Error:", error)
-        }
+    //     try {
+    //         const result = await axios.post(serverUrl + '/api/cart/get', {}, { 
+    //             headers: { token } 
+    //         })
+    //         setCartItem(result.data)
+    //     } catch (error) {
+    //         console.log("Get User Cart Error:", error)
+    //     }
+    // }
+    const getUserCart = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const result = await axios.post(serverUrl + '/api/cart/get', {});
+        setCartItem(result.data);
+    } catch (error) {
+        console.log("Cart fetch error:", error);
     }
+}
 
     // 4. Update Quantity
     const updateQuantity = async (itemId, size, quantity) => {

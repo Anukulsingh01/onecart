@@ -1,50 +1,28 @@
 import jwt from 'jsonwebtoken'
 
-
-// const isAuth = async (req,res,next) => {
-//     try {
-//         let {token} = req.cookies
-        
-//         if(!token){
-//             return res.status(400).json({message:"user does not have token"})
-//         }
-//         let verifyToken = jwt.verify(token,process.env.JWT_SECRET)
-
-//         if(!verifyToken){
-//             return res.status(400).json({message:"user does not have a valid token"})
-//         }
-//         req.userId = verifyToken.userId
-//         next()
-
-//     } catch (error) {
-//          console.log("isAuth error")
-//     return res.status(500).json({message:`isAuth error ${error}`})
-        
-//     }
-// }
-
-// export default isAuth
 const isAuth = async (req, res, next) => {
     try {
-        // Check for token in headers instead of cookies
-        let token = req.headers.token || req.cookies.token; 
+        // Headers mein 'token' check karega
+        const token = req.headers.token || req.cookies.token; 
         
         if (!token) {
-            return res.status(400).json({ message: "user does not have token" });
+            return res.status(400).json({ message: "No token found, please login" });
         }
         
-        let verifyToken = jwt.verify(token, process.env.JWT_SECRET);
+        const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
 
         if (!verifyToken) {
-            return res.status(400).json({ message: "user does not have a valid token" });
+            return res.status(400).json({ message: "Invalid token" });
         }
         
-        // Ensure your JWT payload has 'userId' or just 'id'
+        // Payload check: userId ya id dono handle kar lega
         req.userId = verifyToken.userId || verifyToken.id; 
         next();
 
     } catch (error) {
-        console.log("isAuth error");
-        return res.status(500).json({ message: `isAuth error ${error}` });
+        console.log("isAuth error:", error.message);
+        return res.status(401).json({ message: "Session expired, please login again" });
     }
 }
+
+export default isAuth;
