@@ -64,13 +64,25 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173", "http://localhost:5174"],
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    // Apne Vercel URL ko list mein add karein
+    origin: [
+      "http://localhost:5173", 
+      "http://localhost:5174", 
+      "https://onecart-mocha.vercel.app" // Aapka Vercel URL
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "token"]
   })
 );
-
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
